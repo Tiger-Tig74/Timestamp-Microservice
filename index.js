@@ -37,8 +37,18 @@ app.get("/api/:date?", function (req, res) {
     return;
   }
 
-  // Try parsing the provided date
-  const parsedDate = new Date(date);
+  // Check if the date parameter is a valid Unix timestamp
+  const isUnixTimestamp = /^\d+$/.test(date);
+  let parsedDate;
+
+  if (isUnixTimestamp) {
+    // If it's a Unix timestamp, parse it as a number
+    parsedDate = new Date(parseInt(date));
+  } else {
+    // Try parsing the provided date
+    parsedDate = new Date(date);
+  }
+
   if (isNaN(parsedDate.getTime())) {
     // If invalid date, return error
     res.json({ error: "Invalid Date" });
